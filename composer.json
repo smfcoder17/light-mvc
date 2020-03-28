@@ -1,0 +1,21 @@
+{
+    "name": "smfcoder/mvctemplate",
+    "description": "This is a default php template for creating a simple mvc application.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Francklin Signe Mbe",
+            "email": "smfcoder17@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "Core\\": "Core/"
+        }
+    },
+    "require": {
+        "altorouter/altorouter": "^2.0",
+        "symfony/var-dumper": "^4.4"
+    }
+}
