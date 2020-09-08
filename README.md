@@ -1,6 +1,6 @@
 # Readme
 
-**Php MVC WebApp** is a empty project to help you quickly start building an MVC application/website using php.
+**Light MVC** is a empty project to help you quickly start building an MVC application/website using php.
 
 ## Installation!
   - **Git:**
