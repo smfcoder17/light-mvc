@@ -2,102 +2,85 @@
 
 namespace App;
 
-use Core\Models\WebPage;
-use Core\Models\Router;
-use Core\Database\DB;
+use Core\Model;
+use Core\Router;
+
+define('APP_PATH', ROOT . '/App/');
 
 class App
 {
-     private static $router;
-     private $viewPath;
-     private $template = "layouts/default";
-     private $errorPage404 = "404";
-     private $routerMapsCallable;
-     private static $instance = null;
-     
-     const DB_NAME = "encandb-2020";
-     const DB_USER = "root";
-     const DB_PASSWORD = "mysql";
-     const DB_HOST = "127.0.0.1";
-     private static $db;
+    /**
+     * Represents the application router
+     * @var Router
+     */
+    protected $router = null;
+    /**
+     * Immutable dotenv instance
+     * @var \Dotenv\Dotenv;
+     */
+    protected $dotenv = null;
 
-     private static $page;
+    /**
+     * Initializing App with configurations
+     */
+    public function init()
+    {
+        $this->setupErrorsHandling();
+        $this->initEntities();
+        $this->setupRoutes();
+        
+        // Setting up the routes
+    }
 
-     /**
-      * @param callable $routerMapConfiguration - a function to be call to configure all map routing in the website
-      */
-     public static function config(callable $routerMapConfiguration) : void
-     {
-          self::getInstance()->routerMapsCallable = $routerMapConfiguration;
-          self::getInstance()->configRouter();
-     }
+    protected function initEntities()
+    {
+        $this->router = new Router();
 
-     public static function getDB() : DB {
-          if (self::$db === null) {
-               self::$db = new DB(self::DB_NAME, self::DB_USER, self::DB_PASSWORD, self::DB_HOST);
-           }
-           return self::$db;
-     }
+        // Loading environment variables
+        $this->dotenv = \Dotenv\Dotenv::createImmutable(ROOT);
+        $this->dotenv->load();
 
-     /**
-      * @return WebPage : the object representing the current view page
-      */
-     public static function getWebPage() : WebPage
-     {
-          if (self::$page === null) {
-               self::$page = new WebPage();
-          }
-          return self::$page;
-     }
+        Model::setDbParams(
+            $_ENV['DB_HOST'],
+            $_ENV['DB_PORT'],
+            $_ENV['DB_NAME'],
+            $_ENV['DB_USER'],
+            $_ENV['DB_PASSWORD']
+        );
+    }
 
-     private function __construct()
-     {
-          $this->viewPath = ROOT . "/App/Views/";
-     }
+    protected function setupRoutes()
+    {
+        $routes = require(APP_PATH .'/routes.php');
+        if (is_array($routes)) {
 
-     /**
-      * @return App the unique instance of the application
-      */
-     private static function getInstance() : App
-     {
-          if (self::$instance === null) {
-               self::$instance = new App();
-          }
-          return self::$instance;
-     }
+            foreach ($routes as $route => $params) {
+                $this->router->add($route, $params);
+            }
 
-     private function configRouter()
-     {
-          self::$router = new Router();
-          call_user_func($this->routerMapsCallable, self::$router, $this->template);
+        } else {
+            throw new \Exception("Error while trying to load routes", 500);
+        }
+    }
 
-          $match = self::$router->match();
-          self::$page = new WebPage();
-          if (is_array($match)) {
-               if (is_string($match['target'])) {
-                    $params = $match['params'];
-                    ob_start();
-                    require("{$this->viewPath}/{$match['target']}.php");
-                    self::$page->content = ob_get_clean();
-                    require("{$this->viewPath}/{$this->template}.php");
-               }
-               else if (is_callable($match['target'])) {
-                    call_user_func_array($match['target'], $match['params']);
-               }
-          }
-          else {
-               ob_start();
-               require("{$this->viewPath}/{$this->errorPage404}.php");
-               self::$page->content = ob_get_clean();
-               require("{$this->viewPath}/{$this->template}.php");
-               header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
-          }
-     }
+    /**
+     * Handles App errors and exceptions
+     */
+    protected function setupErrorsHandling()
+    {
+        error_reporting(E_ALL);
+        set_error_handler('Core\Error::errorHandler');
+        set_exception_handler('Core\Error::exceptionHandler');
+    }
 
-     public static function getRouter()
-     {
-          if (self::$router === null)
-               self::$router = new Router();
-          return self::$router;
-     }
+    /**
+     * Dispatch the application to the passed url.
+     * @param string $url url to dispatch the application to.
+     */
+    public function dispatch($url)
+    {
+        if ($this->router !== null) {
+            $this->router->dispatch($url);
+        }
+    }
 }

@@ -1,0 +1,22 @@
+{% extends "base.twig.html" %}
+{% block title %}
+    Tests page
+{% endblock title %}
+
+{% block body %}
+    <h1> Tests index page </h1>
+    {{ test }}
+    {% for test in tableData %}
+        <div class="test-block">
+            <div class="id">id: {{ test.id }}</div>
+            <div class="id">title: {{ test.title }}</div>
+            <div class="id">created: {{ test.created_at }}</div>
+            <p class="id">
+                <u>Description:</u><br>
+                {{ test.description }}
+            </p>
+        </div>
+    {% else %}
+        <p>No data received from the database.</p>
+    {% endfor %}
+{% endblock body %}
