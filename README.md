@@ -5,7 +5,7 @@
 ## Installation!
   - **Git:**
     ```
-    > git install <url>
+    > git clone https://github.com/smfcoder17/light-mvc.git
     ```
   - **You can also:**
     Download and save files from GitHub.
