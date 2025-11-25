@@ -1,15 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Core;
 
 class View
 {
-    static protected $viewsFolder = ROOT . "/App/Views";
+    protected static string $viewsFolder = ROOT . "/App/Views";
 
-    public static function render($view, $args = [])
+    public static function render(string $view, array $args = []): void
     {
         extract($args, EXTR_SKIP);
 
-        $file = View::$viewsFolder .'/'. $view;
+        $file = View::$viewsFolder . '/' . $view;
 
         if (is_readable($file)) {
             require $file;
@@ -23,7 +26,7 @@ class View
      * @param string $template the template file
      * @param array $args Associative array of data passed to the view (optional)
      */
-    public static function renderTemplate($template, $args = [])
+    public static function renderTemplate(string $template, array $args = []): void
     {
         static $twig = null;
 
@@ -41,7 +44,7 @@ class View
      * @param array $args Associative array of data passed to the view (optional)
      * @return string the rendered template
      */
-    public static function getRenderTemplate($template, $args = [])
+    public static function getRenderTemplate(string $template, array $args = []): string
     {
         static $twig = null;
 

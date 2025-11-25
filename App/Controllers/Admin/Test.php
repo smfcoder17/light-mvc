@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers\Admin;
 
-class Users extends \Core\Controller
+use Core\Controller;
+
+class Users extends Controller
 {
-    public function testAction()
+    public function testAction(): void
     {
         echo "<h1>Admin\Users::test</h1>";
     }
@@ -12,7 +16,7 @@ class Users extends \Core\Controller
     /**
      * Before filter - called before an action methods
      */
-    protected function before()
+    protected function before(): mixed
     {
         // ex: Make sure an admin user is logged in
         return true;
@@ -21,7 +25,5 @@ class Users extends \Core\Controller
     /**
      * After filter - called after an action methods
      */
-    protected function after()
-    {}
-
+    protected function after(): void {}
 }

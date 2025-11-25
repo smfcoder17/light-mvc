@@ -1,23 +1,22 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Core;
 
 class Router
 {
+    protected array $routes = [];
+    protected array $params = [];
 
-    protected $routes;
-    protected $params;
-
-    public function __construct()
-    {
-        
-    }
+    public function __construct() {}
 
     /**
      * Add a route to this Router
      * @param string $route The route url
      * @param array $params Parameters (controller, action, etc)
      */
-    public function add($route, $params = [])
+    public function add(string $route, array $params = []): void
     {
         // Convert the route to a regular expression
         $route = preg_replace('/\//', '\\/', $route);
@@ -36,7 +35,7 @@ class Router
     /**
      * Get all routes from this Router
      */
-    public function getRoutes()
+    public function getRoutes(): array
     {
         return $this->routes;
     }
@@ -48,19 +47,18 @@ class Router
      * @param string $url The route url to match with
      * @return boolean true if a match is found, false otherwise.
      */
-    public function match($url)
+    public function match(string $url): bool
     {
         // $regex = "/^\/(?P<controller>[a-z-]+)\/(?P<action>[a-z-]+)$/";
 
         foreach ($this->routes as $route => $params) {
             if (preg_match($route, $url, $matches)) {
-                foreach ($matches as $key => $match)
-                {
+                foreach ($matches as $key => $match) {
                     if (is_string($key)) {
                         $params[$key] = $match;
                     }
                 }
-    
+
                 $this->params = $params;
                 return true;
             }
@@ -73,10 +71,10 @@ class Router
      * Dispatch the application to the passed url.
      * @param string $url url to dispatch the application to.
      */
-    public function dispatch($url)
+    public function dispatch(string $url): void
     {
         $url = $this->removeQueryStringVar($url);
-        
+
         if ($this->match($url)) {
             $controller = Utility::toStudlyCaps($this->params['controller']);
             $controller = $this->getControllerNamespace() . $controller;
@@ -101,14 +99,14 @@ class Router
     /**
      * @return array parameters associated/passed with the url
      */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
 
-    protected function removeQueryStringVar($url, $limit = 2)
+    protected function removeQueryStringVar(string $url, int $limit = 2): string
     {
-        if ($url != '') {
+        if ($url !== '') {
             $parts = explode('&', $url, $limit);
 
             if (strpos($parts[0], '=') === false) {
@@ -116,12 +114,12 @@ class Router
             } else {
                 $url = '';
             }
-
-            return $url;
         }
+
+        return $url;
     }
 
-    protected function getControllerNamespace()
+    protected function getControllerNamespace(): string
     {
         $namespace = "App\Controllers\\";
         if (array_key_exists('namespace', $this->params)) {

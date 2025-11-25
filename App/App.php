@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Core\Model;
 use Core\Router;
+use Dotenv\Dotenv;
 
 define('APP_PATH', ROOT . '/App/');
 
@@ -11,53 +14,48 @@ class App
 {
     /**
      * Represents the application router
-     * @var Router
      */
-    protected $router = null;
+    protected ?Router $router = null;
+
     /**
      * Immutable dotenv instance
-     * @var \Dotenv\Dotenv;
      */
-    protected $dotenv = null;
+    protected ?Dotenv $dotenv = null;
 
     /**
      * Initializing App with configurations
      */
-    public function init()
+    public function init(): void
     {
         $this->setupErrorsHandling();
         $this->initEntities();
         $this->setupRoutes();
-        
-        // Setting up the routes
     }
 
-    protected function initEntities()
+    protected function initEntities(): void
     {
         $this->router = new Router();
 
         // Loading environment variables
-        $this->dotenv = \Dotenv\Dotenv::createImmutable(ROOT);
+        $this->dotenv = Dotenv::createImmutable(ROOT);
         $this->dotenv->load();
 
         Model::setDbParams(
-            $_ENV['DB_HOST'],
-            $_ENV['DB_PORT'],
-            $_ENV['DB_NAME'],
-            $_ENV['DB_USER'],
-            $_ENV['DB_PASSWORD']
+            $_ENV['DB_HOST'] ?? '',
+            $_ENV['DB_PORT'] ?? '3306',
+            $_ENV['DB_NAME'] ?? '',
+            $_ENV['DB_USER'] ?? '',
+            $_ENV['DB_PASSWORD'] ?? ''
         );
     }
 
-    protected function setupRoutes()
+    protected function setupRoutes(): void
     {
-        $routes = require(APP_PATH .'/routes.php');
+        $routes = require(APP_PATH . '/routes.php');
         if (is_array($routes)) {
-
             foreach ($routes as $route => $params) {
                 $this->router->add($route, $params);
             }
-
         } else {
             throw new \Exception("Error while trying to load routes", 500);
         }
@@ -66,7 +64,7 @@ class App
     /**
      * Handles App errors and exceptions
      */
-    protected function setupErrorsHandling()
+    protected function setupErrorsHandling(): void
     {
         error_reporting(E_ALL);
         set_error_handler('Core\Error::errorHandler');
@@ -77,7 +75,7 @@ class App
      * Dispatch the application to the passed url.
      * @param string $url url to dispatch the application to.
      */
-    public function dispatch($url)
+    public function dispatch(string $url): void
     {
         if ($this->router !== null) {
             $this->router->dispatch($url);

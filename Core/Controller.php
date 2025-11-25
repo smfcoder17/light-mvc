@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core;
 
 abstract class Controller
 {
-    protected $routeParams = [];
+    protected array $routeParams = [];
 
-    public function __construct($routeParams)
+    public function __construct(array $routeParams)
     {
         $this->routeParams = $routeParams;
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): void
     {
         $name = $name . "Action";
 
@@ -26,7 +28,7 @@ abstract class Controller
     /**
      * Before filter - called before an action methods
      */
-    protected function before()
+    protected function before(): mixed
     {
         return true;
     }
@@ -34,6 +36,5 @@ abstract class Controller
     /**
      * After filter - called after an action methods
      */
-    protected function after()
-    {}
+    protected function after(): void {}
 }

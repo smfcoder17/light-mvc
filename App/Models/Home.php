@@ -1,14 +1,17 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Core\Model;
-use \PDO;
+use PDO;
 
 class Home extends Model
 {
-    protected $table = 'email-list';
+    protected string $table = 'email-list';
 
-    public static function saveUserContact()
+    public static function saveUserContact(): ?array
     {
         $db = self::getDB();
         // $query = "INSERT INTO";
@@ -20,10 +23,9 @@ class Home extends Model
         return $res;
     }
 
-    public static function userContactExist(...$checkers)
+    public static function userContactExist(mixed ...$checkers): bool
     {
-        if (isset($checkers)) {
-            $query = 
-        }
+        // TODO: Implement this method
+        return false;
     }
 }
