@@ -26,12 +26,12 @@ Visit http://localhost:8000 - You're ready!
 
 ## Features
 
-- **MVC Architecture** - Clean separation of concerns
-- **Advanced Routing** - RESTful routes, dynamic parameters, named routes, middleware
-- **Security** - CSRF protection, XSS prevention, SQL injection protection
-- **Database Layer** - PDO with prepared statements
-- **Template Engine** - Twig integration
-- **Environment Config** - `.env` file support
+-   **MVC Architecture** - Clean separation of concerns
+-   **Advanced Routing** - RESTful routes, dynamic parameters, named routes, middleware
+-   **Security** - CSRF protection, XSS prevention, SQL injection protection
+-   **Database Layer** - PDO with prepared statements
+-   **Template Engine** - Twig integration
+-   **Environment Config** - `.env` file support
 
 ---
 
@@ -45,17 +45,17 @@ use Core\Router;
 
 return function (Router $router): void {
     $routes = $router->getRoutes();
-    
+
     // Simple route
     $routes->get('/', 'Home', 'index')->name('home');
-    
+
     // Route with parameter
     $routes->get('/user/{id}', 'User', 'show')->name('user.show');
-    
+
     // Protected route with middleware
     $routes->get('/dashboard', 'Dashboard', 'index')
         ->middleware('auth');
-    
+
     // API group with rate limiting
     $routes->group(['prefix' => 'api', 'middleware' => 'rate_limit'], function ($routes) {
         $routes->get('/posts', 'Api\\Posts', 'index');
@@ -78,10 +78,10 @@ class User extends Controller
     public function showAction(): void
     {
         $id = $this->routeParams['id'];
-        
+
         // Fetch user from database
         $user = $this->model->getUserById($id);
-        
+
         // Render view
         View::renderTemplate('User/show.html', [
             'user' => $user
@@ -95,10 +95,10 @@ class User extends Controller
 ```html
 <form method="POST" action="<?= route('contact.send') ?>">
     <?= csrf_field() ?>
-    
-    <input type="email" name="email" required>
+
+    <input type="email" name="email" required />
     <textarea name="message" required></textarea>
-    
+
     <button type="submit">Send</button>
 </form>
 ```
@@ -123,10 +123,10 @@ light-mvc/
 
 ## Requirements
 
-- PHP 8.2+
-- Composer
-- MySQL/MariaDB/PostgreSQL
-- Apache/Nginx (or PHP built-in server)
+-   PHP 8.2+
+-   Composer
+-   MySQL/MariaDB/PostgreSQL
+-   Apache/Nginx (or PHP built-in server)
 
 ## Configuration
 
@@ -145,5 +145,5 @@ MIT License - see [LICENSE](LICENSE)
 
 ## Contact
 
-- Email: contact@smfcoder.com
-- GitHub: [smfcoder17/light-mvc](https://github.com/smfcoder17/light-mvc)
+-   Email: contact@smfcoder.com
+-   GitHub: [smfcoder17/light-mvc](https://github.com/smfcoder17/light-mvc)
