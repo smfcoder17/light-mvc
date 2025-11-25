@@ -4,12 +4,12 @@
 
 The Light-MVC framework now includes a professional routing system with support for:
 
-- ✅ HTTP Method Support (GET, POST, PUT, DELETE, PATCH, ANY)
-- ✅ Dynamic Route Parameters: `/user/{id}/edit`
-- ✅ Named Routes for URL generation
-- ✅ Route Grouping with prefixes
-- ✅ Middleware System (Auth, CSRF, Rate Limiting)
-- ✅ Custom Middleware Support
+-   ✅ HTTP Method Support (GET, POST, PUT, DELETE, PATCH, ANY)
+-   ✅ Dynamic Route Parameters: `/user/{id}/edit`
+-   ✅ Named Routes for URL generation
+-   ✅ Route Grouping with prefixes
+-   ✅ Middleware System (Auth, CSRF, Rate Limiting)
+-   ✅ Custom Middleware Support
 
 ## 📖 Basic Usage
 
@@ -19,7 +19,7 @@ The Light-MVC framework now includes a professional routing system with support 
 // In App/routes.php
 return function (Router $router): void {
     $routes = $router->getRoutes();
-    
+
     $routes->get('/', 'Home', 'index');
     $routes->post('/contact', 'Contact', 'send');
     $routes->put('/user/{id}', 'User', 'update');
@@ -54,6 +54,7 @@ Parameters are automatically extracted and passed to your controller via `$this-
 ### Built-in Middlewares
 
 #### 1. Authentication Middleware (`auth`)
+
 Ensures the user is logged in (checks for `$_SESSION['user_id']`).
 
 ```php
@@ -62,6 +63,7 @@ $routes->get('/dashboard', 'Dashboard', 'index')
 ```
 
 #### 2. CSRF Protection (`csrf`)
+
 Validates CSRF token for POST, PUT, and DELETE requests.
 
 ```php
@@ -70,6 +72,7 @@ $routes->post('/user/{id}', 'User', 'update')
 ```
 
 In your forms:
+
 ```html
 <form method="POST" action="/user/123">
     <?= csrf_field() ?>
@@ -78,6 +81,7 @@ In your forms:
 ```
 
 #### 3. Rate Limiting (`rate_limit`)
+
 Limits requests to 60 per minute per IP address.
 
 ```php
@@ -115,17 +119,18 @@ class CustomMiddleware implements MiddlewareInterface
             echo 'Forbidden';
             exit;
         }
-        
+
         $result = $next();
-        
+
         // After action
-        
+
         return $result;
     }
 }
 ```
 
 Register in `Core/Router.php`:
+
 ```php
 $this->middlewareAliases['custom'] = Middleware\CustomMiddleware::class;
 ```
@@ -140,7 +145,7 @@ Group routes with a common prefix:
 $routes->group(['prefix' => 'admin'], function ($routes) {
     // URL: /admin/users
     $routes->get('/users', 'Admin\\Users', 'index');
-    
+
     // URL: /admin/settings
     $routes->get('/settings', 'Admin\\Settings', 'index');
 });
@@ -188,11 +193,11 @@ class User extends Controller
     public function showAction(): void
     {
         $id = $this->routeParams['id'] ?? null;
-        
+
         if ($id === null) {
             throw new \Exception('User ID required', 400);
         }
-        
+
         // Fetch user data
         View::renderTemplate('User/show.html', ['userId' => $id]);
     }
@@ -215,37 +220,49 @@ $routes->match(['GET', 'POST'], $pattern, ...);   // Specific methods
 ## 🔧 Helper Functions
 
 ### `route()`
+
 Generate URL for named route:
+
 ```php
 $url = route('user.show', ['id' => 123]);
 ```
 
 ### `csrf_field()`
+
 Generate hidden CSRF token input:
+
 ```php
 <?= csrf_field() ?>
 ```
 
 ### `csrf_token()`
+
 Get CSRF token value:
+
 ```php
 $token = csrf_token();
 ```
 
 ### `old()`
+
 Retrieve old input value (useful after validation errors):
+
 ```php
 <input name="email" value="<?= old('email') ?>">
 ```
 
 ### `redirect()`
+
 Redirect to URL:
+
 ```php
 redirect('/login');
 ```
 
 ### `back()`
+
 Redirect to previous page:
+
 ```php
 back();
 ```
@@ -261,16 +278,16 @@ $routes->get('/posts/create', 'Post', 'create')->name('posts.create');
 $routes->post('/posts', 'Post', 'store')
     ->name('posts.store')
     ->middleware('csrf');
-    
+
 $routes->get('/posts/{id}', 'Post', 'show')->name('posts.show');
 $routes->get('/posts/{id}/edit', 'Post', 'edit')
     ->name('posts.edit')
     ->middleware('auth');
-    
+
 $routes->put('/posts/{id}', 'Post', 'update')
     ->name('posts.update')
     ->middleware(['auth', 'csrf']);
-    
+
 $routes->delete('/posts/{id}', 'Post', 'destroy')
     ->name('posts.destroy')
     ->middleware(['auth', 'csrf']);
@@ -285,10 +302,10 @@ $routes->group([
 ], function ($routes) {
     $routes->get('/users', 'Api\\Users', 'index');
     $routes->get('/users/{id}', 'Api\\Users', 'show');
-    
+
     $routes->post('/users', 'Api\\Users', 'store')
         ->middleware('auth');
-        
+
     $routes->put('/users/{id}', 'Api\\Users', 'update')
         ->middleware('auth');
 });
@@ -303,10 +320,10 @@ $routes->group([
 <!-- Form with CSRF protection -->
 <form method="POST" action="<?= route('posts.store') ?>">
     <?= csrf_field() ?>
-    
-    <input type="text" name="title" value="<?= old('title') ?>">
+
+    <input type="text" name="title" value="<?= old('title') ?>" />
     <textarea name="content"><?= old('content') ?></textarea>
-    
+
     <button type="submit">Create Post</button>
 </form>
 
@@ -317,6 +334,7 @@ $routes->group([
 ## 🔄 Migration from Old System
 
 ### Before (Old System)
+
 ```php
 return [
     '/' => ['controller' => 'Home', 'action' => 'index'],
@@ -325,10 +343,11 @@ return [
 ```
 
 ### After (New System)
+
 ```php
 return function (Router $router): void {
     $routes = $router->getRoutes();
-    
+
     $routes->get('/', 'Home', 'index')->name('home');
     $routes->get('/{controller}/{action}', 'Dynamic', 'handle');
 };
@@ -346,25 +365,28 @@ return function (Router $router): void {
 ## 🐛 Troubleshooting
 
 ### Route not matching?
-- Check HTTP method matches (GET vs POST)
-- Verify parameter names match in URL pattern
-- Ensure no trailing slashes unless intended
+
+-   Check HTTP method matches (GET vs POST)
+-   Verify parameter names match in URL pattern
+-   Ensure no trailing slashes unless intended
 
 ### Middleware not working?
-- Verify middleware is registered in Router's `$middlewareAliases`
-- Check session is started (done automatically in App.php)
-- Ensure middleware is applied before route group closes
+
+-   Verify middleware is registered in Router's `$middlewareAliases`
+-   Check session is started (done automatically in App.php)
+-   Ensure middleware is applied before route group closes
 
 ### CSRF token mismatch?
-- Ensure form method is POST/PUT/DELETE
-- Include `<?= csrf_field() ?>` in your form
-- Check session is working properly
+
+-   Ensure form method is POST/PUT/DELETE
+-   Include `<?= csrf_field() ?>` in your form
+-   Check session is working properly
 
 ## 📚 Additional Resources
 
-- Review `Core/Route.php` for route matching logic
-- See `Core/RouteCollection.php` for collection methods
-- Check `Core/Router.php` for dispatcher implementation
-- Examine middleware examples in `Core/Middleware/`
+-   Review `Core/Route.php` for route matching logic
+-   See `Core/RouteCollection.php` for collection methods
+-   Check `Core/Router.php` for dispatcher implementation
+-   Examine middleware examples in `Core/Middleware/`
 
 Happy routing! 🚀

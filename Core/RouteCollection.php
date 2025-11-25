@@ -8,10 +8,10 @@ class RouteCollection
 {
     /** @var Route[] */
     private array $routes = [];
-    
+
     /** @var array<string, Route> */
     private array $namedRoutes = [];
-    
+
     private string $prefix = '';
     private array $groupMiddlewares = [];
 

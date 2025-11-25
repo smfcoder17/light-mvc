@@ -57,7 +57,7 @@ class App
     protected function setupRoutes(): void
     {
         $routeLoader = require(APP_PATH . '/routes.php');
-        
+
         if (is_callable($routeLoader)) {
             $routeLoader($this->router);
         } else {

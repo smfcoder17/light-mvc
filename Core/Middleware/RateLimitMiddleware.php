@@ -26,7 +26,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 
         $identifier = $this->getIdentifier();
         $key = 'rate_limit_' . $identifier;
-        
+
         $current = $_SESSION[$key] ?? ['count' => 0, 'reset_at' => time() + $this->timeWindow];
 
         if (time() > $current['reset_at']) {

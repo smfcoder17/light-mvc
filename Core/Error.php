@@ -75,7 +75,7 @@ class Error
                 );
                 error_log($logMsg, 3, $logFile);
             }
-            
+
             View::renderTemplate("Errors/{$status->value}.html");
         }
     }

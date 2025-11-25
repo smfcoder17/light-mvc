@@ -17,11 +17,11 @@ if (!function_exists('route')) {
     function route(string $name, array $params = []): string
     {
         global $app;
-        
+
         if (!isset($app)) {
             throw new \RuntimeException('Application instance not found');
         }
-        
+
         return $app->getRouter()->url($name, $params);
     }
 }
@@ -64,7 +64,7 @@ if (!function_exists('old')) {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         return $_SESSION['_old_input'][$key] ?? $default;
     }
 }

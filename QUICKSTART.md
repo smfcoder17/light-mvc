@@ -3,22 +3,23 @@
 ## Installation
 
 1. **Run setup script:**
-   ```bash
-   # Windows
-   setup.bat
-   
-   # Linux/Mac
-   chmod +x setup.sh
-   ./setup.sh
-   ```
+
+    ```bash
+    # Windows
+    setup.bat
+
+    # Linux/Mac
+    chmod +x setup.sh
+    ./setup.sh
+    ```
 
 2. **Or manually:**
-   ```bash
-   composer install
-   composer dump-autoload
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+    ```bash
+    composer install
+    composer dump-autoload
+    cp .env.example .env
+    # Edit .env with your configuration
+    ```
 
 ## Your First Route
 
@@ -36,7 +37,7 @@ return function (Router $router): void {
 
     // Simple route
     $routes->get('/', 'Home', 'index')->name('home');
-    
+
     // Route with parameter
     $routes->get('/hello/{name}', 'Home', 'hello')->name('hello');
 };
@@ -59,7 +60,7 @@ class Home extends Controller
     {
         echo "Welcome to Light-MVC!";
     }
-    
+
     public function helloAction(): void
     {
         $name = $this->routeParams['name'] ?? 'Guest';
@@ -70,8 +71,8 @@ class Home extends Controller
 
 ### 3. Test Your Routes
 
-- Visit: `http://localhost/` → "Welcome to Light-MVC!"
-- Visit: `http://localhost/hello/John` → "Hello, John!"
+-   Visit: `http://localhost/` → "Welcome to Light-MVC!"
+-   Visit: `http://localhost/hello/John` → "Hello, John!"
 
 ## Common Patterns
 
@@ -111,6 +112,7 @@ $routes->group(['prefix' => 'api', 'middleware' => 'rate_limit'], function ($rou
 ## What Changed?
 
 ### Old Way ❌
+
 ```php
 return [
     '/' => ['controller' => 'Home', 'action' => 'index']
@@ -118,6 +120,7 @@ return [
 ```
 
 ### New Way ✅
+
 ```php
 return function (Router $router): void {
     $routes = $router->getRoutes();
@@ -132,7 +135,7 @@ return function (Router $router): void {
 ✅ Named routes: `route('user.show', ['id' => 123])`  
 ✅ Middleware: `auth`, `csrf`, `rate_limit`  
 ✅ Route grouping: prefix + middleware  
-✅ Helper functions: `csrf_field()`, `route()`, `redirect()`  
+✅ Helper functions: `csrf_field()`, `route()`, `redirect()`
 
 ## Need Help?
 

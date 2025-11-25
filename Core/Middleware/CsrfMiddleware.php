@@ -16,7 +16,7 @@ class CsrfMiddleware implements MiddlewareInterface
         }
 
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        
+
         if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
             $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
             $sessionToken = $_SESSION['csrf_token'] ?? '';

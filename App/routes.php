@@ -24,7 +24,7 @@ return function (Router $router): void {
     // $routes->get('/user/{id}/edit', 'User', 'edit')
     //     ->name('user.edit')
     //     ->middleware('auth');
-    
+
     // Example: API routes with rate limiting
     // $routes->group(['prefix' => 'api', 'middleware' => 'rate_limit'], function ($routes) {
     //     $routes->get('/posts', 'Api\\Posts', 'index')->name('api.posts');

@@ -94,7 +94,7 @@ class Route
     public function extractParameters(string $uri): array
     {
         $regex = $this->buildRegexPattern();
-        
+
         if (!preg_match($regex, $uri, $matches)) {
             return [];
         }

@@ -68,7 +68,7 @@ class Router
         foreach (array_reverse($middlewares) as $middleware) {
             $middlewareClass = $this->resolveMiddleware($middleware);
             $middlewareInstance = new $middlewareClass();
-            
+
             $chain = fn() => $middlewareInstance->handle($chain);
         }
 
@@ -86,10 +86,10 @@ class Router
         if (($pos = strpos($uri, '?')) !== false) {
             $uri = substr($uri, 0, $pos);
         }
-        
+
         // Parse URL and get path
         $path = parse_url($uri, PHP_URL_PATH) ?? '/';
-        
+
         return '/' . trim($path, '/');
     }
 
