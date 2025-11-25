@@ -4,10 +4,32 @@ declare(strict_types=1);
 
 namespace Core;
 
+/**
+ * Error class - Application error and exception handling
+ * 
+ * Provides centralized error handling with debug mode support,
+ * logging capabilities, and custom error pages.
+ * 
+ * @package Core
+ * @author Light-MVC
+ * @version 2.0.0
+ */
 class Error
 {
+    /** @var array<int> HTTP status codes that have custom error pages */
     protected static array $errorsCode = [404];
 
+    /**
+     * Error handler - converts PHP errors to exceptions
+     * Registered via set_error_handler() in application bootstrap
+     * 
+     * @param int $level Error level
+     * @param string $message Error message
+     * @param string $file File where error occurred
+     * @param int $line Line number where error occurred
+     * @return void
+     * @throws \ErrorException Always throws exception if error_reporting is enabled
+     */
     public static function errorHandler(int $level, string $message, string $file, int $line): void
     {
         if (error_reporting() !== 0) {
@@ -16,8 +38,11 @@ class Error
     }
 
     /**
-     * Exception handler method
-     * @param \Throwable $exception the exception to be handle
+     * Exception handler - handles uncaught exceptions
+     * Registered via set_exception_handler() in application bootstrap
+     * Determines appropriate HTTP status and displays error page
+     * 
+     * @param \Throwable $exception The exception to handle
      * @return void
      */
     public static function exceptionHandler(\Throwable $exception): void
@@ -37,9 +62,13 @@ class Error
     }
 
     /**
-     * Display error page
-     * @param HttpStatus $status HTTP status enum
-     * @param \Throwable|null $exception Optional exception for debug info
+     * Display error page based on environment
+     * In debug mode: shows detailed exception information
+     * In production: logs error and shows custom error page
+     * 
+     * @param HttpStatus $status HTTP status code to send
+     * @param \Throwable|null $exception Exception to display/log (optional)
+     * @return void
      */
     public static function display(HttpStatus $status, ?\Throwable $exception = null): void
     {

@@ -6,8 +6,28 @@ namespace Core\Middleware;
 
 use Core\MiddlewareInterface;
 
+/**
+ * CsrfMiddleware - Cross-Site Request Forgery protection
+ * 
+ * Validates CSRF tokens for state-changing HTTP methods (POST, PUT, DELETE).
+ * Prevents CSRF attacks by ensuring requests originate from the application.
+ * 
+ * @package Core\Middleware
+ * @author Light-MVC
+ * @version 2.0.0
+ */
 class CsrfMiddleware implements MiddlewareInterface
 {
+    /**
+     * Handle CSRF token validation
+     * 
+     * For POST, PUT, and DELETE requests, validates that the submitted
+     * CSRF token matches the token stored in the session.
+     * Accepts tokens from POST data or HTTP_X_CSRF_TOKEN header.
+     * 
+     * @param callable(): mixed $next Next middleware in the chain
+     * @return mixed Result from next middleware if token is valid
+     */
     public function handle(callable $next): mixed
     {
         // Start session if not already started
@@ -31,6 +51,15 @@ class CsrfMiddleware implements MiddlewareInterface
         return $next();
     }
 
+    /**
+     * Generate or retrieve CSRF token
+     * 
+     * Creates a new CSRF token if one doesn't exist in the session.
+     * Returns the existing token if already generated.
+     * Use this in forms via csrf_field() helper function.
+     * 
+     * @return string 64-character hexadecimal CSRF token
+     */
     public static function generateToken(): string
     {
         // Start session if not already started
