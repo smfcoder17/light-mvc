@@ -31,7 +31,7 @@ if errorlevel 1 (
 echo Composer found!
 echo.
 
-REM Install dependencies
+# Install dependencies
 echo Installing Composer dependencies...
 composer install
 if errorlevel 1 (
@@ -40,6 +40,12 @@ if errorlevel 1 (
     exit /b 1
 )
 echo Dependencies installed successfully!
+echo.
+
+REM Regenerate autoloader
+echo Regenerating Composer autoloader...
+composer dump-autoload
+echo Autoloader regenerated!
 echo.
 
 REM Copy .env file if it doesn't exist

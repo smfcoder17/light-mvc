@@ -15,18 +15,23 @@ class App
     /**
      * Represents the application router
      */
-    protected ?Router $router = null;
+    protected Router $router;
 
     /**
      * Immutable dotenv instance
      */
-    protected ?Dotenv $dotenv = null;
+    protected Dotenv $dotenv;
 
     /**
      * Initializing App with configurations
      */
     public function init(): void
     {
+        // Start session for middleware support
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $this->setupErrorsHandling();
         $this->initEntities();
         $this->setupRoutes();
@@ -51,13 +56,12 @@ class App
 
     protected function setupRoutes(): void
     {
-        $routes = require(APP_PATH . '/routes.php');
-        if (is_array($routes)) {
-            foreach ($routes as $route => $params) {
-                $this->router->add($route, $params);
-            }
+        $routeLoader = require(APP_PATH . '/routes.php');
+        
+        if (is_callable($routeLoader)) {
+            $routeLoader($this->router);
         } else {
-            throw new \Exception("Error while trying to load routes", 500);
+            throw new \Exception("Routes file must return a callable", 500);
         }
     }
 
@@ -74,11 +78,15 @@ class App
     /**
      * Dispatch the application to the passed url.
      * @param string $url url to dispatch the application to.
+     * @param string $method HTTP method
      */
-    public function dispatch(string $url): void
+    public function dispatch(string $url, string $method = 'GET'): void
     {
-        if ($this->router !== null) {
-            $this->router->dispatch($url);
-        }
+        $this->router->dispatch($url, $method);
+    }
+
+    public function getRouter(): Router
+    {
+        return $this->router;
     }
 }

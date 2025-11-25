@@ -33,13 +33,17 @@ class Error
             default => HttpStatus::INTERNAL_SERVER_ERROR
         };
 
-        http_response_code($httpStatus->value);
+        self::display($httpStatus, $exception);
+    }
 
-        $msg = "<h1>Fatal error</h1>";
-        $msg .= "<p>Uncaught exception: '" . get_class($exception) . "'</p>";
-        $msg .= "<p>Message: '" . $exception->getMessage() . "'</p>";
-        $msg .= "<p>Stack Trace: <pre>" . $exception->getTraceAsString() . "</pre></p>";
-        $msg .= "<p>Thrown in: '" . $exception->getFile() . "' on line " . $exception->getLine() . "</p>";
+    /**
+     * Display error page
+     * @param HttpStatus $status HTTP status enum
+     * @param \Throwable|null $exception Optional exception for debug info
+     */
+    public static function display(HttpStatus $status, ?\Throwable $exception = null): void
+    {
+        http_response_code($status->value);
 
         $isDebugMode = match ($_ENV['APP_DEBUG'] ?? 'true') {
             'true', '1', 'yes' => true,
@@ -47,17 +51,32 @@ class Error
             default => true
         };
 
-        if (!$isDebugMode) {
-            $logDir = ROOT . '/logs';
-            if (!is_dir($logDir)) {
-                mkdir($logDir, 0755, true);
-            }
-            $logFile = $logDir . '/' . date('Y-m-d') . '.txt';
-            ini_set('error_log', $logFile);
-            error_log($msg);
-            View::renderTemplate("Errors/{$httpStatus->value}.html");
-        } else {
+        if ($exception !== null && $isDebugMode) {
+            $msg = "<h1>Fatal error</h1>";
+            $msg .= "<p>Uncaught exception: '" . get_class($exception) . "'</p>";
+            $msg .= "<p>Message: '" . $exception->getMessage() . "'</p>";
+            $msg .= "<p>Stack Trace: <pre>" . $exception->getTraceAsString() . "</pre></p>";
+            $msg .= "<p>Thrown in: '" . $exception->getFile() . "' on line " . $exception->getLine() . "</p>";
             echo $msg;
+        } else {
+            if ($exception !== null) {
+                $logDir = ROOT . '/logs';
+                if (!is_dir($logDir)) {
+                    mkdir($logDir, 0755, true);
+                }
+                $logFile = $logDir . '/' . date('Y-m-d') . '.txt';
+                $logMsg = sprintf(
+                    "[%s] %s: %s in %s:%d\n",
+                    date('Y-m-d H:i:s'),
+                    get_class($exception),
+                    $exception->getMessage(),
+                    $exception->getFile(),
+                    $exception->getLine()
+                );
+                error_log($logMsg, 3, $logFile);
+            }
+            
+            View::renderTemplate("Errors/{$status->value}.html");
         }
     }
 }

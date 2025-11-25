@@ -41,6 +41,12 @@ fi
 echo "Dependencies installed successfully!"
 echo ""
 
+# Regenerate autoloader
+echo "Regenerating Composer autoloader..."
+composer dump-autoload
+echo "Autoloader regenerated!"
+echo ""
+
 # Copy .env file if it doesn't exist
 if [ ! -f .env ]; then
     echo "Creating .env file from .env.example..."
