@@ -1,0 +1,59 @@
+name: PHP Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.3']
+    
+    name: PHP ${{ matrix.php-version }} Test
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, pdo, pdo_mysql
+        coverage: none
+    
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+    
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    
+    - name: Check PHP syntax errors
+      run: find . -name "*.php" -not -path "./vendor/*" -exec php -l {} \; | grep -v "No syntax errors"
+      continue-on-error: true
+    
+    - name: Run code style check (if phpcs is available)
+      run: |
+        if [ -f "vendor/bin/phpcs" ]; then
+          vendor/bin/phpcs --standard=PSR12 App/ Core/
+        else
+          echo "PHP CodeSniffer not installed, skipping..."
+        fi
+      continue-on-error: true
+    
+    # Add your test commands here when tests are available
+    # - name: Run tests
+    #   run: vendor/bin/phpunit tests/

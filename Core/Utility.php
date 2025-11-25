@@ -29,7 +29,7 @@ class Utility
             return strtoupper($match[1]);
         }, $string) ?? $string;
     }
-    
+
     /**
      * Convert a string to camelCase format
      * Example: 'user-profile' becomes 'userProfile'

@@ -1,32 +1,149 @@
-# Readme
+# Light MVC Framework
 
-**Light MVC** is a project template/framework to help you quickly start building your MVC based application/website using php.
+![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## Installation!
-  - **Git:**
-    ```
-    > git clone https://github.com/smfcoder17/light-mvc.git
-    ```
-  - **You can also:**
-    Download and save files from GitHub.
+**A modern, lightweight PHP MVC framework for rapid application development**
+
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/smfcoder17/light-mvc.git
+cd light-mvc
+
+# Run automated setup
+setup.bat  # Windows
+./setup.sh # Linux/Mac
+
+# Start development server
+php -S localhost:8000 -t public
+```
+
+Visit http://localhost:8000 - You're ready!
+
+---
+
+## Features
+
+- **MVC Architecture** - Clean separation of concerns
+- **Advanced Routing** - RESTful routes, dynamic parameters, named routes, middleware
+- **Security** - CSRF protection, XSS prevention, SQL injection protection
+- **Database Layer** - PDO with prepared statements
+- **Template Engine** - Twig integration
+- **Environment Config** - `.env` file support
+
+---
+
+## Usage Examples
+
+### Routes (App/routes.php)
+
+```php
+<?php
+use Core\Router;
+
+return function (Router $router): void {
+    $routes = $router->getRoutes();
+    
+    // Simple route
+    $routes->get('/', 'Home', 'index')->name('home');
+    
+    // Route with parameter
+    $routes->get('/user/{id}', 'User', 'show')->name('user.show');
+    
+    // Protected route with middleware
+    $routes->get('/dashboard', 'Dashboard', 'index')
+        ->middleware('auth');
+    
+    // API group with rate limiting
+    $routes->group(['prefix' => 'api', 'middleware' => 'rate_limit'], function ($routes) {
+        $routes->get('/posts', 'Api\\Posts', 'index');
+        $routes->post('/posts', 'Api\\Posts', 'store')->middleware('csrf');
+    });
+};
+```
+
+### Controller (App/Controllers/User.php)
+
+```php
+<?php
+namespace App\Controllers;
+
+use Core\Controller;
+use Core\View;
+
+class User extends Controller
+{
+    public function showAction(): void
+    {
+        $id = $this->routeParams['id'];
+        
+        // Fetch user from database
+        $user = $this->model->getUserById($id);
+        
+        // Render view
+        View::renderTemplate('User/show.html', [
+            'user' => $user
+        ]);
+    }
+}
+```
+
+### View with CSRF (App/Views/contact.html)
+
+```html
+<form method="POST" action="<?= route('contact.send') ?>">
+    <?= csrf_field() ?>
+    
+    <input type="email" name="email" required>
+    <textarea name="message" required></textarea>
+    
+    <button type="submit">Send</button>
+</form>
+```
+
+---
+
+## Project Structure
+
+```
+light-mvc/
+├── App/              # Your application code
+│   ├── Controllers/  # Request handlers
+│   ├── Models/       # Business logic & database
+│   ├── Views/        # Twig templates
+│   └── routes.php    # Route definitions
+├── Core/             # Framework core
+├── public/           # Web root
+│   ├── index.php     # Entry point
+│   └── assets/       # CSS, JS, images
+└── .env.example      # Environment template
+```
+
+## Requirements
+
+- PHP 8.2+
+- Composer
+- MySQL/MariaDB/PostgreSQL
+- Apache/Nginx (or PHP built-in server)
 
 ## Configuration
-  - **Development**
-    - Configure a virtualhost to start in the **_<path>/www/<project-name>/public_** folder
-  - **Production**
-    - Copy your project to the server in the **_<path>/<project-name>/_** folder
-    - Rename the folder **_public/_** to **_public_html/_** since it's the default name for it on the server.
 
-## Getting Started
-  After installing/clonning **light-mvc**, these are some things you should know or do before you begin to code:
-  - **Installing dependencies:**
-    You have to run the command: `composer install` to install all dependencies. Read more about composer [here](https://getcomposer.org/)
+Edit `.env`:
 
-  - **Project architecture:**
-    - You shoudn't modify files in the `Core/` folder unless you are completly sure of what you're doing.
-    - The file `App/routes.php` contains by default your application routes.
-    - The `App\App.php` class entirely initialize, configure and dispatch your application. Don't hesitate to change it as you please.
-    - you can create a `.env` file at the **root**(same level as App, Core, etc...) folder to store sensitives informations like *database infos, api keys, credentials, etc...*
+```env
+DB_HOST=localhost
+DB_NAME=your_database
+DB_USER=your_username
+DB_PASSWORD=your_password
+```
 
-## Security/Issues
-  If you discover a security vulnerability or any issue within this framework, please send an email to SmfCoder at contact@smfcoder.com.
+## License
+
+MIT License - see [LICENSE](LICENSE)
+
+## Contact
+
+- Email: contact@smfcoder.com
+- GitHub: [smfcoder17/light-mvc](https://github.com/smfcoder17/light-mvc)

@@ -18,7 +18,7 @@ class Router
 {
     /** @var RouteCollection Collection of all application routes */
     private RouteCollection $routes;
-    
+
     /** @var array<string, class-string> Middleware alias to class mapping */
     private array $middlewareAliases = [];
 

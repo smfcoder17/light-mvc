@@ -18,22 +18,22 @@ class Route
 {
     /** @var string Route URL pattern (e.g., '/user/{id}') */
     private string $pattern;
-    
+
     /** @var string Controller class name */
     private string $controller;
-    
+
     /** @var string Controller action/method name */
     private string $action;
-    
+
     /** @var array<string> Allowed HTTP methods for this route */
     private array $methods;
-    
+
     /** @var array<string, mixed> Extracted route parameters */
     private array $parameters = [];
-    
+
     /** @var array<string> Middleware aliases applied to this route */
     private array $middlewares = [];
-    
+
     /** @var string|null Optional route name for URL generation */
     private ?string $name = null;
 

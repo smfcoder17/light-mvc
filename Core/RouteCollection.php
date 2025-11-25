@@ -24,7 +24,7 @@ class RouteCollection
 
     /** @var string Current group prefix */
     private string $prefix = '';
-    
+
     /** @var array<string> Current group middlewares */
     private array $groupMiddlewares = [];
 

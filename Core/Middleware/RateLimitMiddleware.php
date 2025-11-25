@@ -20,7 +20,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 {
     /** @var int Maximum number of requests allowed within time window */
     private int $maxRequests;
-    
+
     /** @var int Time window in seconds */
     private int $timeWindow;
 

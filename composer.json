@@ -1,4 +1,43 @@
 {
+    "name": "smfcoder17/light-mvc",
+    "description": "A modern, lightweight PHP MVC framework for rapid application development",
+    "version": "1.0.0",
+    "type": "project",
+    "keywords": [
+        "framework",
+        "mvc",
+        "php",
+        "lightweight",
+        "routing",
+        "middleware",
+        "twig",
+        "pdo",
+        "rest-api",
+        "php8"
+    ],
+    "homepage": "https://github.com/smfcoder17/light-mvc",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SmfCoder",
+            "email": "contact@smfcoder.com",
+            "homepage": "https://github.com/smfcoder17",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/smfcoder17/light-mvc/issues",
+        "source": "https://github.com/smfcoder17/light-mvc",
+        "docs": "https://github.com/smfcoder17/light-mvc/tree/main/docs"
+    },
+    "require": {
+        "php": ">=8.2",
+        "twig/twig": "^3.0",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "App/",
@@ -8,9 +47,29 @@
             "Core/helpers.php"
         ]
     },
-    "require": {
-        "php": ">=8.2",
-        "twig/twig": "^3.0",
-        "vlucas/phpdotenv": "^5.6"
-    }
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php -r \"echo 'Light MVC installed successfully!\\nRun: php -S localhost:8000 -t public\\n';\""
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

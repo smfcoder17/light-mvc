@@ -20,19 +20,19 @@ abstract class Model
 {
     /** @var PDO|null Singleton PDO database connection */
     protected static ?PDO $db = null;
-    
+
     /** @var string Database host */
     protected static string $dbHost = '';
-    
+
     /** @var string Database port */
     protected static string $dbPort = '';
-    
+
     /** @var string Database name */
     protected static string $dbName = '';
-    
+
     /** @var string Database username */
     protected static string $dbUser = '';
-    
+
     /** @var string Database password */
     protected static string $dbPassword = '';
 

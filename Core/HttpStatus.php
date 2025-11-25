@@ -22,7 +22,7 @@ enum HttpStatus: int
     case ACCEPTED = 202;
     case NO_CONTENT = 204;
 
-    // 3xx Redirection
+        // 3xx Redirection
     case MOVED_PERMANENTLY = 301;
     case FOUND = 302;
     case SEE_OTHER = 303;
@@ -30,7 +30,7 @@ enum HttpStatus: int
     case TEMPORARY_REDIRECT = 307;
     case PERMANENT_REDIRECT = 308;
 
-    // 4xx Client Errors
+        // 4xx Client Errors
     case BAD_REQUEST = 400;
     case UNAUTHORIZED = 401;
     case FORBIDDEN = 403;
@@ -43,7 +43,7 @@ enum HttpStatus: int
     case UNPROCESSABLE_ENTITY = 422;
     case TOO_MANY_REQUESTS = 429;
 
-    // 5xx Server Errors
+        // 5xx Server Errors
     case INTERNAL_SERVER_ERROR = 500;
     case NOT_IMPLEMENTED = 501;
     case BAD_GATEWAY = 502;
